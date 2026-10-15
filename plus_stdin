@@ -6,6 +6,6 @@ for line in sys.stdin:
     try:
         x += int(line)    #intは文字列を整数に（失敗すると例外発生）
     except ValueError:    #第3回で見たエラーの名前
-        x += float(line)
+        x += tonum(line.rstrip())   #line.rstrip()で末尾の改行を除去
 
 print(x)
