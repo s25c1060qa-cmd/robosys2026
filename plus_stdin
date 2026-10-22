@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# SPDX-FileCopyrightText: 2026 Kota Takeguchi
 import sys
 
 #本来は関数の前後に空行を2行あける（スライドの都合で省略）
