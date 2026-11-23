@@ -1,0 +1,18 @@
+#!/usr/bin/python3
+
+import sys
+
+for line in sys.stdin:
+    try:
+        lon = float(line.strip())
+        # 経度は -180度 〜 +180度 の範囲に収まるかチェック
+        if lon < -180.0 or lon > 180.0:
+            print("エラー: 経度は-180から180の間で入力してください", file=sys.stderr)
+            sys.exit(1)
+
+        diff = (lon - 135.0) / 15.0
+        print(f"日本との時差は: {diff:+.1f}時間")
+
+    except ValueError:
+        print("エラー: 経度は数字で入力してください", file=sys.stderr)
+        sys.exit(1)
