@@ -1,18 +1,39 @@
 #!/usr/bin/python3
 
 import sys
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+#日本語対応用の辞書
+COUNTRIES = {
+    "アメリカ": "America/New_York",
+    "USA": "America/New_York",
+    "ニューヨーク": "America/New_York",
+    "ロサンゼルス": "America/Los_Angeles",
+    "イギリス": "Europe/London",
+    "UK": "Europe/London",
+    "ロンドン": "Europe/London",
+    "フランス": "Europe/Paris",
+    "ドイツ": "Europe/Berlin",
+    "韓国": "Asia/Seoul",
+    "中国": "Asia/Shanghai",
+    "インド": "Asia/Kolkata",
+    "オーストラリア": "Australia/Sydney",
+}
+
+jst = ZoneInfo("Asia/Tokyo")
 
 for line in sys.stdin:
-    try:
-        lon = float(line.strip())
-        # 経度は -180度 〜 +180度 の範囲に収まるかチェック
-        if lon < -180.0 or lon > 180.0:
-            print("エラー: 経度は-180から180の間で入力してください", file=sys.stderr)
-            sys.exit(1)
+    name = line.strip()
 
-        diff = (lon - 135.0) / 15.0
-        print(f"日本との時差は: {diff:+.1f}時間")
+    if not name:
+        continue
 
-    except ValueError:
-        print("エラー: 経度は数字で入力してください", file=sys.stderr)
+    if name not in COUNTRIES:
+        print(f"{name}は登録されていない国名です。", file=sys.stderr)
         sys.exit(1)
+
+    target_tz = ZoneInfo(COUNTRIES[name])
+    #一度秒にするため、.total_seconds()を使っています
+    timediff = (datetime.now(target_tz).utcoffset() - datetime.now(jst).utcoffset()).total_seconds() / 3600
+    print(f"日本との時間の差は：{timediff}時間です。")
