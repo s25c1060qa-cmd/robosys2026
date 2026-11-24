@@ -29,11 +29,24 @@ for line in sys.stdin:
     if not name:
         continue
 
-    if name not in COUNTRIES:
-        print(f"{name}は登録されていない国名です。", file=sys.stderr)
-        sys.exit(1)
+    if name in COUNTRIES:
+        target_tz = ZoneInfo(COUNTRIES[name])
+#一度秒にするため、.total_seconds()を使っています
+        timediff = (datetime.now(target_tz).utcoffset() - datetime.now(jst).utcoffset()).total_seconds() / 3600
+        print(f"日本との時間の差は：{timediff}時間です。")
+    else:
+#軽度が入力されてた時の処理
+        try:
+            lon = float(name)
 
-    target_tz = ZoneInfo(COUNTRIES[name])
-    #一度秒にするため、.total_seconds()を使っています
-    timediff = (datetime.now(target_tz).utcoffset() - datetime.now(jst).utcoffset()).total_seconds() / 3600
-    print(f"日本との時間の差は：{timediff}時間です。")
+            if lon < -180.0 or lon > 180.0:
+                print("エラー: 経度は-180から180の間で入力してください", file=sys.stderr)
+                sys.exit(1)
+
+            timediff = (lon - 135.0) / 15.0
+            print(f"日本との時間の差は：{timediff:+.1f}時間です。")
+
+        except ValueError:
+#辞書にもなくかつ、数字が入力されたわけでもない場合の処理
+            print("エラーメッセージ：国名か経度を入力してください", file=sys.stderr)
+            sys.exit(1)
