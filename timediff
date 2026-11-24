@@ -34,8 +34,8 @@ for line in sys.stdin:
 #一度秒にするため、.total_seconds()を使っています
         timediff = (datetime.now(target_tz).utcoffset() - datetime.now(jst).utcoffset()).total_seconds() / 3600
         print(f"日本との時間の差は：{timediff}時間です。")
+#経度が入力されてた時の処理
     else:
-#軽度が入力されてた時の処理
         try:
             lon = float(name)
 
