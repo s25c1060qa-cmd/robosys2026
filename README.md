@@ -25,7 +25,7 @@ chmod +x timediff
 ```bash
 echo 15 | ./timediff 75
 ```
-#例2
+# 例2
 ```bash
 echo 15 | ./timediff 韓国
 ```
