@@ -30,6 +30,7 @@ echo 15 | ./timediff 75
 echo 15 | ./timediff 韓国
 ```
 ## テスト結果
+<img width="771" height="105" alt="image" src="https://github.com/user-attachments/assets/85eef7d4-c8ad-4fcb-92ab-0b99b1fbd905" />
 
 ## ライセンス
 - このソフトウェアパッケージは、3条項BSDライセンスの下、再頒布および使用が許可されます。
