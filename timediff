@@ -1,10 +1,11 @@
 #!/usr/bin/python3
+# SPDX-FileCopyrightText: 2026 Kota Takeguchi
+# SPDX-License-Identifier: BSD-3-Clause
 
 import sys
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-#日本語対応用の辞書
 COUNTRIES = {
     "アメリカ": "America/New_York",
     "USA": "America/New_York",
@@ -23,30 +24,42 @@ COUNTRIES = {
 
 jst = ZoneInfo("Asia/Tokyo")
 
-for line in sys.stdin:
-    name = line.strip()
+if len(sys.argv) < 2:
+    print("エラー: 引数に国名または経度を指定してください", file=sys.stderr)
+    sys.exit(1)
 
-    if not name:
+target = sys.argv[1]
+
+if target in COUNTRIES:
+    target_tz = ZoneInfo(COUNTRIES[target])
+    timediff = (datetime.now(target_tz).utcoffset() - datetime.now(jst).utcoffset()).total_seconds() / 3600
+else:
+    try:
+        lon = float(target)
+        if lon < -180.0 or lon > 180.0:
+            print("エラー: 経度は-180から180の間で入力してください", file=sys.stderr)
+            sys.exit(1)
+        timediff = (lon - 135.0) / 15.0
+    except ValueError:
+        print("エラー: 登録されていない国名か、不正な経度です", file=sys.stderr)
+        sys.exit(1)
+
+#標準入力から「日本の時刻」を受け取り、現地時刻の数字を出力
+for line in sys.stdin:
+    text = line.strip()
+    if not text:
         continue
 
-    if name in COUNTRIES:
-        target_tz = ZoneInfo(COUNTRIES[name])
-#一度秒にするため、.total_seconds()を使っています
-        timediff = (datetime.now(target_tz).utcoffset() - datetime.now(jst).utcoffset()).total_seconds() / 3600
-        print(f"日本との時間の差は：{timediff}時間です。")
-#経度が入力されてた時の処理
-    else:
-        try:
-            lon = float(name)
-
-            if lon < -180.0 or lon > 180.0:
-                print("エラー: 経度は-180から180の間で入力してください", file=sys.stderr)
-                sys.exit(1)
-
-            timediff = (lon - 135.0) / 15.0
-            print(f"日本との時間の差は：{timediff:+.1f}時間です。")
-
-        except ValueError:
-#辞書にもなくかつ、数字が入力されたわけでもない場合の処理
-            print("エラーメッセージ：国名か経度を入力してください", file=sys.stderr)
+    try:
+        japan_hour = float(text)
+        if japan_hour < 0.0 or japan_hour > 24.0:
+            print("エラー: 時刻は0から24の間で入力してください", file=sys.stderr)
             sys.exit(1)
+
+        # 日本の時刻に時差を足して、24時間表記（0〜24）に直す
+        local_hour = (japan_hour + timediff) % 24.0
+        print(f"{local_hour:.1f}")
+
+    except ValueError:
+        print("エラー: 時刻は数字で入力してください", file=sys.stderr)
+        sys.exit(1)
