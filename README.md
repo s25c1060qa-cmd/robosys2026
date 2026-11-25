@@ -1,9 +1,3 @@
-# plusコマンド
-![test](https://github.com/s25c1060qa-cmd/robosys2026/actions/workflows/test.yml/badge.svg)
-
-標準入力から読み込んだ数字を足す。
-
-（ここに前ページの項目をいろいろ書く）
 # timediffコマンド
 ![test](https://github.com/s25c1060qa-cmd/robosys2026/actions/workflows/test.yml/badge.svg)
 
